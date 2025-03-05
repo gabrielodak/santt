@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Especial</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #FFC0CB;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #yes {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #no {
+            background-color: #f44336;
+            color: white;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="content">
+        <h1>Rayssa, você quer namorar comigo?</h1>
+        <div class="buttons">
+            <button id="yes">Sim</button>
+            <button id="no">Não</button>
+        </div>
+    </div>
+    <p id="response" style="display:none; font-size: 20px; margin-top: 20px;"></p>
+    
+    <script>
+        document.getElementById("no").addEventListener("mouseover", function() {
+            let x = Math.random() * (window.innerWidth - this.clientWidth);
+            let y = Math.random() * (window.innerHeight - this.clientHeight);
+            this.style.left = `${x}px`;
+            this.style.top = `${y}px`;
+        });
+        
+        document.getElementById("yes").addEventListener("click", function() {
+            document.getElementById("content").style.display = "none";
+            document.getElementById("response").style.display = "block";
+            document.getElementById("response").innerText = "[Escreva aqui o seu texto especial]";
+        });
+    </script>
+</body>
+</html>
