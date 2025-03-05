@@ -13,9 +13,11 @@
             background-color: #FFC0CB;
             flex-direction: column;
             font-family: Arial, sans-serif;
+            overflow: hidden;
         }
         .container {
             text-align: center;
+            position: relative;
         }
         h1 {
             font-size: 24px;
@@ -41,6 +43,32 @@
             color: white;
             position: absolute;
         }
+        .heart {
+            position: absolute;
+            width: 50px; /* Tamanho original */
+            height: 50px; /* Tamanho original */
+            background-image: url('https://images.emojiterra.com/microsoft/fluent-emoji/15.1/1024px/2764_flat.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        .heart-large {
+            width: 70px; /* Tamanho maior */
+            height: 70px; /* Tamanho maior */
+            display: none; /* Ocultar por padrão */
+        }
+        .flower {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url('https://images.emojiterra.com/google/android-oreo/512px/1f339.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: fall 5s linear infinite;
+        }
+        @keyframes fall {
+            0% { top: -30px; }
+            100% { top: 100vh; }
+        }
     </style>
 </head>
 <body>
@@ -53,19 +81,107 @@
     </div>
     <p id="response" style="display:none; font-size: 20px; margin-top: 20px;"></p>
     
+    <div class="heart" style="top: 10px; left: 10px;"></div>
+    <div class="heart" style="top: 10px; right: 10px;"></div>
+    <div class="heart" style="bottom: 10px; left: 10px;"></div>
+    <div class="heart" style="bottom: 10px; right: 10px;"></div>
+
+    <div class="heart heart-large" id="heart1" style="top: 0; left: calc(50% - 35px); display: none;"></div> <!-- Ocultar por padrão -->
+    <div class="heart heart-large" id="heart2" style="bottom: 0; left: calc(50% - 35px); display: none;"></div>
+
     <script>
-        document.getElementById("no").addEventListener("mouseover", function() {
-            let x = Math.random() * (window.innerWidth - this.clientWidth);
-            let y = Math.random() * (window.innerHeight - this.clientHeight);
+        const noButton = document.getElementById("no");
+        const yesButton = document.getElementById("yes");
+        const container = document.querySelector(".container");
+        let lastX = 0; // Última posição X do botão "Não"
+        let lastY = 0; // Última posição Y do botão "Não"
+        let flowerInterval;
+
+        noButton.addEventListener("mouseover", function() {
+            const containerRect = container.getBoundingClientRect();
+            const buttonWidth = this.clientWidth;
+            const buttonHeight = this.clientHeight;
+
+            // Limitar a movimentação do botão "Não"
+            let x, y;
+            do {
+                // Gerar novas coordenadas aleatórias
+                x = Math.random() * (containerRect.width - buttonWidth);
+                y = Math.random() * (containerRect.height - buttonHeight);
+            } while (
+                Math.abs(x - lastX) < 50 || Math.abs(x - lastX) > 300 ||
+                Math.abs(y - lastY) < 50 || Math.abs(y - lastY) > 300
+            );
+
+            // Atualizar a posição anterior
+            lastX = x;
+            lastY = y;
+
             this.style.left = `${x}px`;
             this.style.top = `${y}px`;
         });
-        
-        document.getElementById("yes").addEventListener("click", function() {
+
+        yesButton.addEventListener("click", function() {
             document.getElementById("content").style.display = "none";
             document.getElementById("response").style.display = "block";
-            document.getElementById("response").innerText = "❤️ Eu á amo muito, minha flor. Você é a melhor coisa que já me aconteceu. Eu nunca imaginei nem em meus sonhos ter uma mulher tão perfeita em todos os quesitos. Você não tem defeito algum, nunca consegui encontrar um e com certeza nunca irei conseguir. Eu te adoro muito, cada palavra que você fala pra mim, gera uma reação diferente no meu corpo, todas boas. Você me faz um bem inexplicável. Eu te amo tanto que eu sinto as suas emoções, sinto extrema felicidade quando te vejo feliz. Quando você está triste, meu humor acaba e eu fico triste junto porque não suporto ver a minha mulher sofrendo. E todas as outras emoções. Você é a melhor mulher do mundo. Não vejo a hora de te colocar em meus braços após o nosso casamento. Estarei casado com a mulher mais linda, carismática, inteligente, amorosa, divertida, forte, companheira, dedicada, atraente, apaixonante, encantadora, generosa... Eu poderia ficar dias falando suas qualidades e não terminaria. Então eu digo que você chega a ser melhor que a perfeição, mas isso é pouco comparado a você, minha princesa. ❤️";
+            document.getElementById("response").innerText = "🤍 Eu á amo muito, minha flor. Você é a melhor coisa que já me aconteceu. Eu nunca imaginei nem em meus sonhos ter uma mulher tão perfeita em todos os quesitos. Você não tem defeito algum, nunca consegui encontrar um e com certeza nunca irei conseguir. Eu te adoro muito, cada palavra que você fala pra mim, gera uma reação diferente no meu corpo, todas boas. Você me faz um bem inexplicável. Eu te amo tanto que eu sinto as suas emoções, sinto extrema felicidade quando te vejo feliz. Quando você está triste, meu humor acaba e eu fico triste junto porque não suporto ver a minha mulher sofrendo. E todas as outras emoções. Você é a melhor mulher do mundo. Não vejo a hora de te colocar em meus braços após o nosso casamento. Estarei casado com a mulher mais linda, carismática, inteligente, amorosa, divertida, forte, companheira, dedicada, atraente, apaixonante, encantadora, generosa... Eu poderia ficar dias falando suas qualidades e não terminaria. Então eu digo que você chega a ser melhor que a perfeição, mas isso é pouco comparado a você, minha princesa. 🤍";
+
+            // Remover os corações menores
+            const smallHearts = document.querySelectorAll('.heart:not(.heart-large)');
+            smallHearts.forEach(heart => heart.remove());
+
+            // Mostrar apenas o coração de cima
+            const largeHeart = document.getElementById("heart1");
+            largeHeart.style.display = "block";
+
+            // Ocultar o coração de baixo
+            const bottomHeart = document.getElementById("heart2");
+            bottomHeart.style.display = "none";
+
+            // Reduzir a frequência de flores
+            clearInterval(flowerInterval);
+            flowerInterval = setInterval(generateFlower, 2500); // Flores a cada 5 segundos
         });
+
+        noButton.addEventListener("click", function() {
+            // Mover o botão "Não" para uma nova posição sem animação
+            const containerRect = container.getBoundingClientRect();
+            const buttonWidth = this.clientWidth;
+            const buttonHeight = this.clientHeight;
+
+            let x, y;
+            do {
+                // Gerar novas coordenadas aleatórias
+                x = Math.random() * (containerRect.width - buttonWidth);
+                y = Math.random() * (containerRect.height - buttonHeight);
+            } while (
+                Math.abs(x - lastX) < 50 || Math.abs(x - lastX) > 300 ||
+                Math.abs(y - lastY) < 50 || Math.abs(y - lastY) > 300
+            );
+
+            // Atualizar a posição anterior
+            lastX = x;
+            lastY = y;
+
+            this.style.left = `${x}px`;
+            this.style.top = `${y}px`;
+        });
+
+        // Função para gerar flores caindo
+        function generateFlower() {
+            const flower = document.createElement('div');
+            flower.classList.add('flower');
+            flower.style.left = Math.random() * window.innerWidth + 'px';
+            document.body.appendChild(flower);
+            
+            // Remover a flor após a animação
+            flower.addEventListener('animationend', () => {
+                flower.remove();
+            });
+        }
+
+        // Gerar flores a cada 2 segundos (ou mais, se preferir)
+        flowerInterval = setInterval(generateFlower, 1500);
     </script>
 </body>
 </html>
